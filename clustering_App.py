@@ -26,13 +26,14 @@ tabs = st.tabs(["🧪 Classification", "📈 Regression", "🔍 Clustering"])
 # ---------------- Classification ----------------
 with tabs[0]:
     st.header("Classification: Telco Customer Churn")
-    y_true = telco['y_test']
-    y_pred = telco['y_pred']
+    y_true = pd.Series(telco['y_test'])
+    y_pred = pd.Series(telco['y_pred'])
     st.write(f"**Accuracy:** {accuracy_score(y_true, y_pred):.2f}")
     st.write("### Confusion Matrix")
     st.write(pd.crosstab(y_true, y_pred, rownames=["Actual"], colnames=["Predicted"]))
     st.write("### Sample Predictions")
-    st.write(pd.DataFrame({"Actual": y_true.values[:10], "Predicted": y_pred[:10]}))
+    st.write(pd.DataFrame({"Actual": y_true[:10], "Predicted": y_pred[:10]}))
+
 
 # ---------------- Regression ----------------
 with tabs[1]:
