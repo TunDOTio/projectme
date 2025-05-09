@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Apr 19 22:14:00 2025
-
-@author: Nongnuch
-"""
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -67,26 +60,31 @@ with tabs[1]:
 
 # ---------------- Clustering ----------------
 with tabs[2]:
-    st.header("K-Means Clustering: Iris Dataset")
-    iris = load_iris()
-    X = pd.DataFrame(iris.data, columns=iris.feature_names)
+    st.header("K-Means Clustering: Telco Data")
 
+    # Load data from pickle
+    X_telco = telco["X_train"]  # Already scaled
     k = st.slider("Select number of clusters (k)", 2, 10, 3)
-    kmeans = KMeans(n_clusters=k, random_state=42)
-    labels = kmeans.fit_predict(X)
 
-    pca = PCA(n_components=2)
-    reduced = pca.fit_transform(X)
-    reduced_df = pd.DataFrame(reduced, columns=["PCA1", "PCA2"])
-    reduced_df["Cluster"] = labels
+    # Apply K-Means
+    kmeans_telco = KMeans(n_clusters=k, random_state=42)
+    labels_telco = kmeans_telco.fit_predict(X_telco)
 
-    fig, ax = plt.subplots()
+    # Dimensionality reduction for visualization
+    pca_telco = PCA(n_components=2)
+    reduced_telco = pca_telco.fit_transform(X_telco)
+    reduced_df_telco = pd.DataFrame(reduced_telco, columns=["PCA1", "PCA2"])
+    reduced_df_telco["Cluster"] = labels_telco
+
+    # Plot clusters
+    fig_telco, ax_telco = plt.subplots()
     for cluster in range(k):
-        cluster_data = reduced_df[reduced_df["Cluster"] == cluster]
-        ax.scatter(cluster_data["PCA1"], cluster_data["PCA2"], label=f"Cluster {cluster}")
-    ax.set_title("Clusters (2D PCA Projection)")
-    ax.set_xlabel("PCA1")
-    ax.set_ylabel("PCA2")
-    ax.legend()
-    st.pyplot(fig)
-    st.dataframe(reduced_df.head(10))
+        cluster_data = reduced_df_telco[reduced_df_telco["Cluster"] == cluster]
+        ax_telco.scatter(cluster_data["PCA1"], cluster_data["PCA2"], label=f"Cluster {cluster}")
+    ax_telco.set_title("K-Means Clusters (Telco Data, 2D PCA)")
+    ax_telco.set_xlabel("PCA1")
+    ax_telco.set_ylabel("PCA2")
+    ax_telco.legend()
+    st.pyplot(fig_telco)
+
+    st.dataframe(reduced_df_telco.head(10))
